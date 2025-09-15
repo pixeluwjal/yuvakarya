@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig from "next";
 
 const nextConfig: NextConfig = {
   // Disable TypeScript and ESLint checks during the build
@@ -9,16 +9,10 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Tell Next.js to not bundle these server-side packages
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push("googleapis", "google-auth-library");
-    }
-    return config;
+  // Use this option for server-side-only packages in the App Router
+  experimental: {
+    serverComponentsExternalPackages: ['googleapis', 'google-auth-library'],
   },
-
-  // Note: For Next.js 13+ with App Router, 'serverComponentsExternalPackages' is also a valid option.
-  // serverComponentsExternalPackages: ['googleapis', 'google-auth-library'],
 };
 
 export default nextConfig;
