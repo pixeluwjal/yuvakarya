@@ -186,7 +186,7 @@ export default function Home() {
                 </div>
               </div>
               <h2 className="text-4xl font-bold text-white mb-2">Registration Successful!</h2>
-              <p className="text-green-100 text-lg">Thank afor registering with RSS Yuva Karya. We'll be in touch!</p>
+              <p className="text-green-100 text-lg">Thank you for registering with RSS Yuva Karya. We'll be in touch!</p>
             </div>
           </div>
         ) : (
@@ -209,152 +209,161 @@ export default function Home() {
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-              {/* Left column for fields */}
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Name <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
-                    College <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="college"
-                    name="college"
-                    required
-                    value={formData.college}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Enter your college name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="degree" className="block text-sm font-medium text-gray-700 mb-1">
-                    Degree <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="degree"
-                    name="degree"
-                    required
-                    value={formData.degree}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Example: B.E., M.B.B.S, B.A."
-                  />
-                </div>
-                <div>
-                  <label htmlFor="classSemester" className="block text-sm font-medium text-gray-700 mb-1">
-                    Class/Semester <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="classSemester"
-                    name="classSemester"
-                    required
-                    value={formData.classSemester}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Example: Final Year, 6th Semester"
-                  />
-                </div>
+            {/* Reordered fields in a single column */}
+            <div className="space-y-6 mb-10">
+              {/* Name */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Name <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Enter your full name"
+                />
               </div>
 
-              {/* Right column for fields */}
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-1">
-                    WhatsApp Number <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    id="whatsapp"
-                    name="whatsapp"
-                    required
-                    value={formData.whatsapp}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Enter your WhatsApp number"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
-                    Course <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="course"
-                    name="course"
-                    required
-                    value={formData.course}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Enter your course of study"
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">
-                      Residential Locality <span className="text-orange-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="locality"
-                      name="locality"
-                      required
-                      value={formData.locality}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                      placeholder="Example: Girinagar 2nd Phase"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
-                      Pincode <span className="text-orange-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="pincode"
-                      name="pincode"
-                      required
-                      value={formData.pincode}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                      placeholder="Enter your area pincode"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="birthYear" className="block text-sm font-medium text-gray-700 mb-1">
-                    Birth Year <span className="text-orange-600">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="birthYear"
-                    name="birthYear"
-                    required
-                    value={formData.birthYear}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Example: 2005"
-                    min="1900" 
-                    max="2025" 
-                  />
-                </div>
+              {/* WhatsApp Number */}
+              <div>
+                <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-1">
+                  WhatsApp Number <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="whatsapp"
+                  name="whatsapp"
+                  required
+                  value={formData.whatsapp}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Enter your WhatsApp number"
+                />
+              </div>
+
+              {/* College */}
+              <div>
+                <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
+                  College <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="college"
+                  name="college"
+                  required
+                  value={formData.college}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Enter your college name"
+                />
+              </div>
+
+              {/* Degree */}
+              <div>
+                <label htmlFor="degree" className="block text-sm font-medium text-gray-700 mb-1">
+                  Degree <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="degree"
+                  name="degree"
+                  required
+                  value={formData.degree}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Example: B.E., M.B.B.S, B.A."
+                />
+              </div>
+              
+              {/* Course */}
+              <div>
+                <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
+                  Course <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="course"
+                  name="course"
+                  required
+                  value={formData.course}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Enter your course of study"
+                />
+              </div>
+              
+              {/* Class/Semester */}
+              <div>
+                <label htmlFor="classSemester" className="block text-sm font-medium text-gray-700 mb-1">
+                  Class/Semester <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="classSemester"
+                  name="classSemester"
+                  required
+                  value={formData.classSemester}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Example: Final Year, 6th Semester"
+                />
+              </div>
+
+              {/* Residential Locality */}
+              <div>
+                <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">
+                  Residential Locality <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="locality"
+                  name="locality"
+                  required
+                  value={formData.locality}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Example: Girinagar 2nd Phase"
+                />
+              </div>
+
+              {/* Pincode */}
+              <div>
+                <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
+                  Pincode <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="pincode"
+                  name="pincode"
+                  required
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Enter your area pincode"
+                />
+              </div>
+
+              {/* Birth Year */}
+              <div>
+                <label htmlFor="birthYear" className="block text-sm font-medium text-gray-700 mb-1">
+                  Birth Year <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="birthYear"
+                  name="birthYear"
+                  required
+                  value={formData.birthYear}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                  placeholder="Example: 2005"
+                  min="1900" 
+                  max="2025" 
+                />
               </div>
             </div>
 
@@ -403,6 +412,11 @@ export default function Home() {
                             </div>
                             <span className="ml-3 text-sm font-medium">{option}</span>
                           </label>
+                          {option === 'Indian Knowledge Systems (IKS)' && (
+                            <p className="text-xs text-gray-500 ml-8 mt-1">
+                              (e.g., Indian Mathematics, Astronomy, Metallurgy, Linguistic Heritage)
+                            </p>
+                          )}
                           {option === 'Others' && formData.interests.includes(`Others (${category.title})`) && (
                             <div className="mt-2">
                               <input
