@@ -9,17 +9,28 @@ export async function POST(request: NextRequest) {
       name,
       whatsapp,
       college,
+      // --- NEW FIELDS ---
+      degree,
+      classSemester,
+      // ------------------
       course,
       locality,
       pincode,
       birthYear,
-      interests
+      interests,
+      // --- NEW FIELD ---
+      comments,
+      // -----------------
     } = body;
 
     // A more robust validation check with specific error messages
     if (!name) return NextResponse.json({ error: 'Name is required.' }, { status: 400 });
     if (!whatsapp) return NextResponse.json({ error: 'WhatsApp number is required.' }, { status: 400 });
     if (!college) return NextResponse.json({ error: 'College is required.' }, { status: 400 });
+    // --- UPDATED VALIDATION ---
+    if (!degree) return NextResponse.json({ error: 'Degree is required.' }, { status: 400 });
+    if (!classSemester) return NextResponse.json({ error: 'Class/Semester is required.' }, { status: 400 });
+    // --------------------------
     if (!course) return NextResponse.json({ error: 'Course is required.' }, { status: 400 });
     if (!locality) return NextResponse.json({ error: 'Residential locality is required.' }, { status: 400 });
     if (!pincode) return NextResponse.json({ error: 'Pincode is required.' }, { status: 400 });
@@ -54,19 +65,26 @@ export async function POST(request: NextRequest) {
     const sheets = google.sheets({ version: 'v4', auth });
 
     const sheetId = process.env.GOOGLE_SHEET_ID;
-    const range = 'Sheet1!A:I'; // Make sure this range matches your Google Sheet columns
+    // --- UPDATED RANGE TO INCLUDE NEW COLUMNS ---
+    const range = 'Sheet1!A:L'; // Updated to support Degree, Class/Semester, and Comments. Let's use L just in case the interests parsing adds more.
+    // ------------------------------------------
 
     // Format the data for the sheet
+    // --- UPDATED VALUES ARRAY TO INCLUDE NEW FIELDS ---
     const values = [
       name,
       whatsapp,
       college,
+      degree,
+      classSemester,
       course,
       locality,
       pincode,
       birthYear,
-      interests.join(', ') // Convert the interests array to a comma-separated string
+      interests.join(', '), // Convert the interests array to a comma-separated string
+      comments,
     ];
+    // --------------------------------------------------
 
     const resource = {
       values: [values],

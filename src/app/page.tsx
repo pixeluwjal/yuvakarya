@@ -8,34 +8,58 @@ export default function Home() {
     name: '',
     whatsapp: '',
     college: '',
+    degree: '',
+    classSemester: '',
     course: '',
     locality: '',
     pincode: '',
     birthYear: '',
     interests: [] as string[],
+    comments: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('');
-  const [otherInterest, setOtherInterest] = useState('');
+  const [otherInterests, setOtherInterests] = useState({
+    'Engineering Courses': '',
+    'Medical Courses': '',
+    'Arts Courses': '',
+    'Other Professional Courses': '',
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, categoryTitle: string) => {
     const { value, checked } = e.target;
+
     setFormData(prev => {
-      if (checked) {
-        return { ...prev, interests: [...prev.interests, value] };
+      let updatedInterests = [...prev.interests];
+
+      if (value === 'Others') {
+        const othersTag = `Others (${categoryTitle})`;
+        if (checked) {
+          updatedInterests.push(othersTag);
+        } else {
+          updatedInterests = updatedInterests.filter(item => item !== othersTag);
+          setOtherInterests(prevOthers => ({ ...prevOthers, [categoryTitle]: '' }));
+        }
       } else {
-        return { ...prev, interests: prev.interests.filter(item => item !== value) };
+        if (checked) {
+          updatedInterests.push(value);
+        } else {
+          updatedInterests = updatedInterests.filter(item => item !== value);
+        }
       }
+
+      return { ...prev, interests: updatedInterests };
     });
   };
 
   const handleOtherChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOtherInterest(e.target.value);
+    const { name, value } = e.target;
+    setOtherInterests(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,10 +67,15 @@ export default function Home() {
     setIsSubmitting(true);
     setSubmitStatus('');
 
-    const interestsToSend = formData.interests.includes('Others') && otherInterest
-      ? [...formData.interests.filter(item => item !== 'Others'), `Others: ${otherInterest}`]
-      : formData.interests;
+    let interestsToSend = [...formData.interests];
 
+    for (const category in otherInterests) {
+      const otherInterestValue = otherInterests[category as keyof typeof otherInterests];
+      if (otherInterestValue) {
+        interestsToSend.push(`Others (${category}): ${otherInterestValue}`);
+      }
+    }
+    
     const dataToSend = { ...formData, interests: interestsToSend };
 
     try {
@@ -64,13 +93,21 @@ export default function Home() {
           name: '',
           whatsapp: '',
           college: '',
+          degree: '',
+          classSemester: '',
           course: '',
           locality: '',
           pincode: '',
           birthYear: '',
           interests: [],
+          comments: '',
         });
-        setOtherInterest('');
+        setOtherInterests({
+          'Engineering Courses': '',
+          'Medical Courses': '',
+          'Arts Courses': '',
+          'Other Professional Courses': '',
+        });
       } else {
         setSubmitStatus('error');
       }
@@ -84,29 +121,30 @@ export default function Home() {
   const interestCategories = [
     {
       title: 'Engineering Courses',
-      options: ['AI/ML & Data Science', 'Electronics', 'Instrumentation']
+      options: ['AI/ML & Data Science', 'Electronics', 'Instrumentation', 'Others']
     },
     {
       title: 'Medical Courses',
-      options: ['Allopathy', 'AYUSH', 'Therapeutic disciplines (Physiotherapy, Psychology, etc.)']
+      options: ['Allopathy', 'AYUSH', 'Therapeutic disciplines (Physiotherapy, Psychology, etc.)', 'Others']
     },
     {
-      title: 'Arts',
+      title: 'Arts Courses',
       options: [
         'Fine Arts (painting, sculpture, etc.)',
         'Visual Arts (animation, graphic design, etc.)',
         'Performing Arts (dance, music, theatre)',
-        'Humanities and Social Sciences (history, economics, etc.)'
+        'Humanities and Social Sciences (history, economics, etc.)',
+        'Others'
       ]
     },
     {
-      title: 'Other Professions',
+      title: 'Other Professional Courses',
       options: [
         'Legal', 
         'Defense', 
         'Space Research', 
         'Agricultural Science',
-        'Indian Knowledge Systems (IKS) (Ayurveda, Yoga, etc.)',
+        'Indian Knowledge Systems (IKS)',
         'Others'
       ]
     }
@@ -148,7 +186,7 @@ export default function Home() {
                 </div>
               </div>
               <h2 className="text-4xl font-bold text-white mb-2">Registration Successful!</h2>
-              <p className="text-green-100 text-lg">Thank you for registering with RSS Yuva Karya. We'll be in touch!</p>
+              <p className="text-green-100 text-lg">Thank afor registering with RSS Yuva Karya. We'll be in touch!</p>
             </div>
           </div>
         ) : (
@@ -172,6 +210,7 @@ export default function Home() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+              {/* Left column for fields */}
               <div className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -188,7 +227,6 @@ export default function Home() {
                     placeholder="Enter your full name"
                   />
                 </div>
-
                 <div>
                   <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
                     College <span className="text-orange-600">*</span>
@@ -204,43 +242,39 @@ export default function Home() {
                     placeholder="Enter your college name"
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">
-                    Residential Locality <span className="text-orange-600">*</span>
+                  <label htmlFor="degree" className="block text-sm font-medium text-gray-700 mb-1">
+                    Degree <span className="text-orange-600">*</span>
                   </label>
                   <input
                     type="text"
-                    id="locality"
-                    name="locality"
+                    id="degree"
+                    name="degree"
                     required
-                    value={formData.locality}
+                    value={formData.degree}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Example: Girinagar 2nd Phase"
+                    placeholder="Example: B.E., M.B.B.S, B.A."
                   />
                 </div>
-
-                {/* Restored Birth Year field */}
                 <div>
-                  <label htmlFor="birthYear" className="block text-sm font-medium text-gray-700 mb-1">
-                    Birth Year <span className="text-orange-600">*</span>
+                  <label htmlFor="classSemester" className="block text-sm font-medium text-gray-700 mb-1">
+                    Class/Semester <span className="text-orange-600">*</span>
                   </label>
                   <input
-                    type="number"
-                    id="birthYear"
-                    name="birthYear"
+                    type="text"
+                    id="classSemester"
+                    name="classSemester"
                     required
-                    value={formData.birthYear}
+                    value={formData.classSemester}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Example: 2005"
-                    min="1900" 
-                    max="2025" 
+                    placeholder="Example: Final Year, 6th Semester"
                   />
                 </div>
               </div>
 
+              {/* Right column for fields */}
               <div className="space-y-6">
                 <div>
                   <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-1">
@@ -257,10 +291,9 @@ export default function Home() {
                     placeholder="Enter your WhatsApp number"
                   />
                 </div>
-
                 <div>
                   <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
-                    Studying Course <span className="text-orange-600">*</span>
+                    Course <span className="text-orange-600">*</span>
                   </label>
                   <input
                     type="text"
@@ -273,20 +306,53 @@ export default function Home() {
                     placeholder="Enter your course of study"
                   />
                 </div>
-                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">
+                      Residential Locality <span className="text-orange-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="locality"
+                      name="locality"
+                      required
+                      value={formData.locality}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                      placeholder="Example: Girinagar 2nd Phase"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
+                      Pincode <span className="text-orange-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="pincode"
+                      name="pincode"
+                      required
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                      placeholder="Enter your area pincode"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
-                    Pincode <span className="text-orange-600">*</span>
+                  <label htmlFor="birthYear" className="block text-sm font-medium text-gray-700 mb-1">
+                    Birth Year <span className="text-orange-600">*</span>
                   </label>
                   <input
-                    type="text"
-                    id="pincode"
-                    name="pincode"
+                    type="number"
+                    id="birthYear"
+                    name="birthYear"
                     required
-                    value={formData.pincode}
+                    value={formData.birthYear}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                    placeholder="Enter your area pincode"
+                    placeholder="Example: 2005"
+                    min="1900" 
+                    max="2025" 
                   />
                 </div>
               </div>
@@ -308,40 +374,68 @@ export default function Home() {
                     </h4>
                     <div className="space-y-2">
                       {category.options.map((option, optIndex) => (
-                        <label key={optIndex} className="flex items-center cursor-pointer text-gray-700">
-                          <input
-                            type="checkbox"
-                            name="interests"
-                            value={option}
-                            checked={formData.interests.includes(option)}
-                            onChange={handleCheckboxChange}
-                            className="hidden" // Hide the default checkbox
-                          />
-                          <div className="w-5 h-5 flex items-center justify-center border-2 border-gray-300 rounded-md transition-all duration-200">
-                            {formData.interests.includes(option) && (
-                              <svg className="w-4 h-4 text-white bg-orange-500 rounded-sm p-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className="ml-3 text-sm font-medium">{option}</span>
-                        </label>
+                        <div key={optIndex}>
+                          <label className="flex items-center cursor-pointer text-gray-700">
+                            <input
+                              type="checkbox"
+                              name={category.title} // Use category.title for grouping
+                              value={option}
+                              // Updated `checked` logic
+                              checked={
+                                option !== 'Others' 
+                                  ? formData.interests.includes(option)
+                                  : formData.interests.includes(`Others (${category.title})`)
+                              }
+                              onChange={(e) => handleCheckboxChange(e, category.title)}
+                              className="hidden"
+                            />
+                            <div className="w-5 h-5 flex items-center justify-center border-2 border-gray-300 rounded-md transition-all duration-200">
+                              {/* Updated checkmark logic */}
+                              {(
+                                option !== 'Others' 
+                                  ? formData.interests.includes(option)
+                                  : formData.interests.includes(`Others (${category.title})`)
+                              ) && (
+                                <svg className="w-4 h-4 text-white bg-orange-500 rounded-sm p-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className="ml-3 text-sm font-medium">{option}</span>
+                          </label>
+                          {option === 'Others' && formData.interests.includes(`Others (${category.title})`) && (
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                name={category.title}
+                                value={otherInterests[category.title as keyof typeof otherInterests]}
+                                onChange={handleOtherChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-gray-50 text-gray-900 shadow-sm"
+                                placeholder="Please specify your other interest"
+                              />
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </div>
-                    {category.title === 'Other Professions' && formData.interests.includes('Others') && (
-                      <div className="mt-4">
-                        <input
-                          type="text"
-                          value={otherInterest}
-                          onChange={handleOtherChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-gray-50 text-gray-900 shadow-sm"
-                          placeholder="Please specify your other interest"
-                        />
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="mb-8">
+              <label htmlFor="comments" className="block text-sm font-medium text-gray-700 mb-1">
+                Comments (Optional)
+              </label>
+              <textarea
+                id="comments"
+                name="comments"
+                rows={4}
+                value={formData.comments}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+                placeholder="Any additional comments or questions?"
+              ></textarea>
             </div>
 
             <button
