@@ -2,6 +2,29 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { 
+  FaUser, 
+  FaPhone, 
+  FaUniversity, 
+  FaGraduationCap, 
+  FaBook, 
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaClock,
+  FaBirthdayCake,
+  FaCheck,
+  FaExclamationTriangle,
+  FaSpinner,
+  FaChevronRight,
+  FaStar
+} from 'react-icons/fa';
+import { 
+  HiAcademicCap, 
+  HiBriefcase, 
+  HiChartBar, 
+  HiClipboardList,
+  HiLocationMarker
+} from 'react-icons/hi';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -23,6 +46,7 @@ export default function Home() {
     'Engineering Courses': '',
     'Medical Courses': '',
     'Arts Courses': '',
+    'Commerce Courses': '',
     'Other Professional Courses': '',
   });
 
@@ -67,7 +91,9 @@ export default function Home() {
     setIsSubmitting(true);
     setSubmitStatus('');
 
-    let interestsToSend = [...formData.interests];
+    const interestsToSend = [
+      ...formData.interests.filter(interest => !interest.startsWith('Others (')),
+    ];
 
     for (const category in otherInterests) {
       const otherInterestValue = otherInterests[category as keyof typeof otherInterests];
@@ -90,23 +116,13 @@ export default function Home() {
       if (response.ok) {
         setSubmitStatus('success');
         setFormData({
-          name: '',
-          whatsapp: '',
-          college: '',
-          degree: '',
-          classSemester: '',
-          course: '',
-          locality: '',
-          pincode: '',
-          birthYear: '',
-          interests: [],
-          comments: '',
+          name: '', whatsapp: '', college: '', degree: '',
+          classSemester: '', course: '', locality: '', pincode: '',
+          birthYear: '', interests: [], comments: '',
         });
         setOtherInterests({
-          'Engineering Courses': '',
-          'Medical Courses': '',
-          'Arts Courses': '',
-          'Other Professional Courses': '',
+          'Engineering Courses': '', 'Medical Courses': '', 'Arts Courses': '',
+          'Commerce Courses': '', 'Other Professional Courses': '',
         });
       } else {
         setSubmitStatus('error');
@@ -121,14 +137,17 @@ export default function Home() {
   const interestCategories = [
     {
       title: 'Engineering Courses',
+      icon: HiAcademicCap,
       options: ['AI/ML & Data Science', 'Electronics', 'Instrumentation', 'Others']
     },
     {
       title: 'Medical Courses',
+      icon: FaStar,
       options: ['Allopathy', 'AYUSH', 'Therapeutic disciplines (Physiotherapy, Psychology, etc.)', 'Others']
     },
     {
       title: 'Arts Courses',
+      icon: HiChartBar,
       options: [
         'Fine Arts (painting, sculpture, etc.)',
         'Visual Arts (animation, graphic design, etc.)',
@@ -138,70 +157,96 @@ export default function Home() {
       ]
     },
     {
-      title: 'Other Professional Courses',
+      title: 'Commerce Courses',
+      icon: HiBriefcase,
       options: [
-        'Legal', 
-        'Defense', 
-        'Space Research', 
-        'Agricultural Science',
-        'Indian Knowledge Systems (IKS)',
+        'Accounting & Auditing',
+        'Investment Banking & Wealth Management Programs',
+        'FinTech & Data-Driven Finance Courses',
+        'Business & Management',
+        'Taxation & Corporate Laws',
+        'International Trade & Supply Chain Management',
+        'Business Analytics & Financial Modelling',
         'Others'
+      ]
+    },
+    {
+      title: 'Other Professional Courses',
+      icon: HiClipboardList,
+      options: [
+        'Legal', 'Defense', 'Space Research', 'Agricultural Science',
+        'Indian Knowledge Systems (IKS)', 'Others'
       ]
     }
   ];
 
+  // Input Icon Component with better alignment
+  const InputIcon = ({ icon: Icon, className = "" }: { icon: React.ElementType, className?: string }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+      <Icon className={`h-5 w-5 ${className}`} />
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header Section */}
+        {/* Enhanced Header Section */}
         <div className="text-center mb-12">
-          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-4">
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center rounded-full shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-6 space-y-4 sm:space-y-0 sm:space-x-6">
+            <div className="relative w-32 h-32 flex items-center justify-center rounded-full shadow-2xl bg-white border-4 border-orange-100">
               <Image
                 src="/rss.webp"
                 width={120}
                 height={120}
                 alt="RSS flag logo"
-                className="rounded-full object-cover"
+                className="rounded-full object-cover p-2"
               />
             </div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
-              RSS Yuva Karya
-            </h1>
+            <div className="text-center sm:text-left">
+              <h1 className="text-5xl sm:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-600">
+                RSS Yuva Karya
+              </h1>
+              <p className="text-lg text-gray-600 mt-3 max-w-2xl mx-auto sm:mx-0 flex items-center justify-center sm:justify-start">
+                Join the movement for youth development and nation building
+              </p>
+            </div>
           </div>
-          <p className="text-lg text-gray-600 mt-2 max-w-2xl mx-auto font-light">
-            Join the movement for youth development and nation building.
-          </p>
         </div>
 
         {submitStatus === 'success' ? (
-          // Beautiful Success Message
-          <div className="bg-white shadow-xl rounded-2xl overflow-hidden animate-fade-in-up">
-            <div className="bg-gradient-to-r from-emerald-500 to-green-600 py-10 px-6 text-center">
-              <div className="flex justify-center mb-4">
-                <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-white animate-bounce-in" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+          // Enhanced Success Message
+          <div className="bg-white shadow-2xl rounded-2xl overflow-hidden animate-fade-in-up border border-emerald-200">
+            <div className="bg-gradient-to-r from-emerald-500 to-green-600 py-16 px-6 text-center">
+              <div className="flex justify-center mb-6">
+                <div className="w-28 h-28 rounded-full bg-white/20 flex items-center justify-center animate-bounce-in">
+                  <FaCheck className="h-14 w-14 text-white" />
                 </div>
               </div>
-              <h2 className="text-4xl font-bold text-white mb-2">Registration Successful!</h2>
-              <p className="text-green-100 text-lg">Thank you for registering with RSS Yuva Karya. We'll be in touch!</p>
+              <h2 className="text-4xl font-bold text-white mb-4">Registration Successful!</h2>
+              <p className="text-green-100 text-lg mb-6">Thank you for registering with RSS Yuva Karya. We'll be in touch soon!</p>
+              <div className="flex items-center justify-center text-green-200">
+                <FaStar className="mr-2" />
+                <span>Your journey with us begins now</span>
+                <FaStar className="ml-2" />
+              </div>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white p-8 sm:p-10 shadow-xl rounded-2xl">
-            {/* Form Header */}
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-800">Registration Form</h2>
-              <p className="text-gray-500 mt-2">Please fill out all the required fields to join our community.</p>
+          <form onSubmit={handleSubmit} className="bg-white p-8 sm:p-10 shadow-2xl rounded-2xl border border-gray-100">
+            <div className="mb-10 text-center border-b border-gray-100 pb-6">
+              <h2 className="text-3xl font-bold text-gray-800 flex items-center justify-center">
+                <HiAcademicCap className="text-orange-500 mr-3" />
+                Registration Form
+              </h2>
+              <p className="text-gray-500 mt-3 flex items-center justify-center">
+                <FaChevronRight className="text-orange-400 mr-2 text-sm" />
+                Please fill out all required fields to join our community
+              </p>
             </div>
 
             {submitStatus === 'error' && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-start animate-shake">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-start animate-shake">
+                <FaExclamationTriangle className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">There was an error submitting the form.</p>
                   <p className="text-sm mt-1">Please try again or contact support if the problem persists.</p>
@@ -209,267 +254,263 @@ export default function Home() {
               </div>
             )}
 
-            {/* Reordered fields in a single column */}
-            <div className="space-y-6 mb-10">
+            {/* Form Grid with Better Spacing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {/* Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Name <span className="text-orange-600">*</span>
+              <div className="relative">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaUser className="text-orange-500 mr-2 text-sm" />
+                  Name <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              {/* WhatsApp Number */}
-              <div>
-                <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-1">
-                  WhatsApp Number <span className="text-orange-600">*</span>
-                </label>
-                <input
-                  type="tel"
-                  id="whatsapp"
-                  name="whatsapp"
-                  required
-                  value={formData.whatsapp}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Enter your WhatsApp number"
-                />
-              </div>
-
-              {/* College */}
-              <div>
-                <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
-                  College <span className="text-orange-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="college"
-                  name="college"
-                  required
-                  value={formData.college}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Enter your college name"
-                />
-              </div>
-
-              {/* Degree */}
-              <div>
-                <label htmlFor="degree" className="block text-sm font-medium text-gray-700 mb-1">
-                  Degree <span className="text-orange-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="degree"
-                  name="degree"
-                  required
-                  value={formData.degree}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Example: B.E., M.B.B.S, B.A."
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  required 
+                  value={formData.name} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="Your full name" 
                 />
               </div>
               
-              {/* Course */}
-              <div>
-                <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
-                  Course <span className="text-orange-600">*</span>
+              {/* WhatsApp Number */}
+              <div className="relative">
+                <label htmlFor="whatsapp" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaPhone className="text-orange-500 mr-2 text-sm" />
+                  WhatsApp Number <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="text"
-                  id="course"
-                  name="course"
-                  required
-                  value={formData.course}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Enter your course of study"
+                <input 
+                  type="tel" 
+                  id="whatsapp" 
+                  name="whatsapp" 
+                  required 
+                  value={formData.whatsapp} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="Your WhatsApp number" 
+                />
+              </div>
+              
+              {/* College */}
+              <div className="relative">
+                <label htmlFor="college" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaUniversity className="text-orange-500 mr-2 text-sm" />
+                  College <span className="text-orange-600 ml-1">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="college" 
+                  name="college" 
+                  required 
+                  value={formData.college} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="Your college name" 
+                />
+              </div>
+              
+              {/* Degree */}
+              <div className="relative">
+                <label htmlFor="degree" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaGraduationCap className="text-orange-500 mr-2 text-sm" />
+                  Degree <span className="text-orange-600 ml-1">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="degree" 
+                  name="degree" 
+                  required 
+                  value={formData.degree} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="e.g., B.E., M.B.B.S" 
+                />
+              </div>
+
+              {/* Course */}
+              <div className="relative">
+                <label htmlFor="course" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  Course <span className="text-orange-600 ml-1">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="course" 
+                  name="course" 
+                  required 
+                  value={formData.course} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="Your course of study" 
                 />
               </div>
               
               {/* Class/Semester */}
-              <div>
-                <label htmlFor="classSemester" className="block text-sm font-medium text-gray-700 mb-1">
-                  Class/Semester <span className="text-orange-600">*</span>
+              <div className="relative">
+                <label htmlFor="classSemester" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaCalendarAlt className="text-orange-500 mr-2 text-sm" />
+                  Class/Semester <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="text"
-                  id="classSemester"
-                  name="classSemester"
-                  required
-                  value={formData.classSemester}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Example: Final Year, 6th Semester"
+                <input 
+                  type="text" 
+                  id="classSemester" 
+                  name="classSemester" 
+                  required 
+                  value={formData.classSemester} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="e.g., Final Year" 
                 />
               </div>
 
               {/* Residential Locality */}
-              <div>
-                <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">
-                  Residential Locality <span className="text-orange-600">*</span>
+              <div className="relative">
+                <label htmlFor="locality" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <HiLocationMarker className="text-orange-500 mr-2 text-sm" />
+                  Residential Locality <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="text"
-                  id="locality"
-                  name="locality"
-                  required
-                  value={formData.locality}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Example: Girinagar 2nd Phase"
+                <input 
+                  type="text" 
+                  id="locality" 
+                  name="locality" 
+                  required 
+                  value={formData.locality} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="e.g., Girinagar 2nd Phase" 
                 />
               </div>
-
+              
               {/* Pincode */}
-              <div>
-                <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Pincode <span className="text-orange-600">*</span>
+              <div className="relative">
+                <label htmlFor="pincode" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaMapMarkerAlt className="text-orange-500 mr-2 text-sm" />
+                  Pincode <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="text"
-                  id="pincode"
-                  name="pincode"
-                  required
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Enter your area pincode"
+                <input 
+                  type="text" 
+                  id="pincode" 
+                  name="pincode" 
+                  required 
+                  value={formData.pincode} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="Your area pincode" 
                 />
               </div>
-
+              
               {/* Birth Year */}
-              <div>
-                <label htmlFor="birthYear" className="block text-sm font-medium text-gray-700 mb-1">
-                  Birth Year <span className="text-orange-600">*</span>
+              <div className="relative md:col-span-2">
+                <label htmlFor="birthYear" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  <FaBirthdayCake className="text-orange-500 mr-2 text-sm" />
+                  Birth Year <span className="text-orange-600 ml-1">*</span>
                 </label>
-                <input
-                  type="number"
-                  id="birthYear"
-                  name="birthYear"
-                  required
-                  value={formData.birthYear}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
-                  placeholder="Example: 2005"
+                <input 
+                  type="number" 
+                  id="birthYear" 
+                  name="birthYear" 
+                  required 
+                  value={formData.birthYear} 
+                  onChange={handleChange} 
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
+                  placeholder="e.g., 2005" 
                   min="1900" 
                   max="2025" 
                 />
               </div>
             </div>
 
+            {/* Enhanced Interests Section */}
             <div className="mb-10">
-              <h3 className="text-xl font-semibold text-gray-800 mb-5 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zM9 13a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" />
-                </svg>
+              <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center border-b border-gray-100 pb-4">
+                <HiAcademicCap className="text-orange-500 mr-3" />
                 Area of Interest <span className="text-orange-600 ml-1">*</span>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {interestCategories.map((category, index) => (
-                  <div key={index} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-lg transition-shadow duration-300">
-                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                      <span className="w-2.5 h-2.5 bg-orange-500 rounded-full mr-2"></span>
-                      {category.title}
-                    </h4>
-                    <div className="space-y-2">
-                      {category.options.map((option, optIndex) => (
-                        <div key={optIndex}>
-                          <label className="flex items-center cursor-pointer text-gray-700">
-                            <input
-                              type="checkbox"
-                              name={category.title} // Use category.title for grouping
-                              value={option}
-                              // Updated `checked` logic
-                              checked={
-                                option !== 'Others' 
-                                  ? formData.interests.includes(option)
-                                  : formData.interests.includes(`Others (${category.title})`)
-                              }
-                              onChange={(e) => handleCheckboxChange(e, category.title)}
-                              className="hidden"
-                            />
-                            <div className="w-5 h-5 flex items-center justify-center border-2 border-gray-300 rounded-md transition-all duration-200">
-                              {/* Updated checkmark logic */}
-                              {(
-                                option !== 'Others' 
-                                  ? formData.interests.includes(option)
-                                  : formData.interests.includes(`Others (${category.title})`)
-                              ) && (
-                                <svg className="w-4 h-4 text-white bg-orange-500 rounded-sm p-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className="ml-3 text-sm font-medium">{option}</span>
-                          </label>
-                          {option === 'Indian Knowledge Systems (IKS)' && (
-                            <p className="text-xs text-gray-500 ml-8 mt-1">
-                              (e.g., Indian Mathematics, Astronomy, Metallurgy, Linguistic Heritage)
-                            </p>
-                          )}
-                          {option === 'Others' && formData.interests.includes(`Others (${category.title})`) && (
-                            <div className="mt-2">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {interestCategories.map((category) => {
+                  const CategoryIcon = category.icon;
+                  return (
+                    <div key={category.title} className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300 group">
+                      <h4 className="font-semibold text-gray-800 mb-4 flex items-center group-hover:text-orange-600 transition-colors">
+                        <CategoryIcon className="text-orange-500 mr-3 group-hover:scale-110 transition-transform" />
+                        {category.title}
+                      </h4>
+                      <div className="space-y-3">
+                        {category.options.map((option, optIndex) => (
+                          <div key={optIndex}>
+                            <label className="flex items-start cursor-pointer text-gray-700 hover:text-gray-900 group/option">
                               <input
-                                type="text"
+                                type="checkbox"
                                 name={category.title}
-                                value={otherInterests[category.title as keyof typeof otherInterests]}
-                                onChange={handleOtherChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-gray-50 text-gray-900 shadow-sm"
-                                placeholder="Please specify your other interest"
+                                value={option}
+                                checked={
+                                  option !== 'Others' 
+                                    ? formData.interests.includes(option)
+                                    : formData.interests.includes(`Others (${category.title})`)
+                                }
+                                onChange={(e) => handleCheckboxChange(e, category.title)}
+                                className="peer hidden"
                               />
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                              <div className="w-5 h-5 flex items-center justify-center border-2 border-gray-300 rounded-md transition-all duration-200 peer-checked:bg-orange-500 peer-checked:border-orange-500 mt-0.5 group-hover/option:border-orange-300">
+                                <FaCheck className="w-3 h-3 text-white hidden peer-checked:block" />
+                              </div>
+                              <span className="ml-3 text-sm font-medium leading-relaxed">{option}</span>
+                            </label>
+                            {option === 'Indian Knowledge Systems (IKS)' && (
+                              <p className="text-xs text-gray-500 ml-8 mt-1">(e.g., Indian Mathematics, Astronomy, etc.)</p>
+                            )}
+                            {option === 'Others' && formData.interests.includes(`Others (${category.title})`) && (
+                              <div className="mt-2 ml-8">
+                                <input 
+                                  type="text" 
+                                  name={category.title} 
+                                  value={otherInterests[category.title as keyof typeof otherInterests]} 
+                                  onChange={handleOtherChange} 
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 text-sm"
+                                  placeholder="Please specify your interest" 
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
+            {/* Comments Section */}
             <div className="mb-8">
-              <label htmlFor="comments" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="comments" className="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                <HiClipboardList className="text-orange-500 mr-2" />
                 Comments (Optional)
               </label>
-              <textarea
-                id="comments"
-                name="comments"
-                rows={4}
-                value={formData.comments}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm"
+              <textarea 
+                id="comments" 
+                name="comments" 
+                rows={4} 
+                value={formData.comments} 
+                onChange={handleChange} 
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 bg-white text-gray-900 shadow-sm placeholder-gray-400"
                 placeholder="Any additional comments or questions?"
               ></textarea>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 hover:from-orange-600 hover:to-amber-600 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed"
+              className="w-full text-lg py-4 px-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 transition-all duration-300 hover:from-orange-600 hover:to-amber-600 focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] group"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                  <FaSpinner className="animate-spin mr-3 h-5 w-5" />
                   Processing...
                 </span>
               ) : (
-                <span className="flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+                <span className="flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <FaCheck className="mr-3 h-5 w-5" />
                   Submit Registration
                 </span>
               )}
@@ -477,41 +518,24 @@ export default function Home() {
           </form>
         )}
 
-        {/* Footer Note */}
+        {/* Footer */}
         <div className="text-center mt-8 text-gray-500 text-sm">
-          <p>Your information is secure and will only be used for RSS Yuva Karya initiatives.</p>
+          <p className="flex items-center justify-center">
+            <FaStar className="text-amber-400 mr-2 text-xs" />
+            Your information is secure and will only be used for RSS Yuva Karya initiatives
+            <FaStar className="text-amber-400 ml-2 text-xs" />
+          </p>
         </div>
       </div>
 
       <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn-up {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-          20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        @keyframes bounce-in {
-          0% { transform: scale(0.5); opacity: 0; }
-          60% { transform: scale(1.2); opacity: 1; }
-          100% { transform: scale(1); }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeIn-up 0.7s ease-out forwards;
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-        .animate-bounce-in {
-          animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
+        @keyframes bounce-in { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); } }
+        .animate-fade-in-up { animation: fade-in-up 0.7s ease-out forwards; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-bounce-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
       `}</style>
     </div>
   );
